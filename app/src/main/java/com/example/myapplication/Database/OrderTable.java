@@ -45,7 +45,7 @@ public class OrderTable {
         else{
             int amountNew = product.getAmount() - order.getAmount();
             product.setAmount(amountNew);
-            productDatabase.updateProduct(product);
+            int resultUpdate = updateProduct(product);
             ContentValues values = new ContentValues();
             values.put(KEY_ID_PRODUCT, order.getIdProduct());
             values.put(KEY_NAME_CUSTOMER, order.getNameCustomer());
@@ -82,14 +82,14 @@ public class OrderTable {
             }
             else if (order.getIdProduct()==order1.getIdProduct()){
                 product.setAmount(product.getAmount() + delta);
-                productDatabase.updateProduct(product);
+                int resultUpdate = updateProduct(product);
 
             }
             else {
                 product.setAmount(product.getAmount()-order.getAmount());
-                productDatabase.updateProduct(product);
+                int resultUpdate = updateProduct(product);
                 product1.setAmount(product1.getAmount()+order1.getAmount());
-                productDatabase.updateProduct(product1);;
+                int resultUpdate1 = updateProduct(product1);;
             }
             ContentValues values = new ContentValues();
             values.put(KEY_ID_PRODUCT, order.getIdProduct());
@@ -120,14 +120,14 @@ public class OrderTable {
             }
             else if (order.getIdProduct()==order1.getIdProduct()){
                 product.setAmount(product.getAmount() - delta);
-                productDatabase.updateProduct(product);
+                int resultUpdate = updateProduct(product);
 
             }
             else {
                 product.setAmount(product.getAmount()-order.getAmount());
-                productDatabase.updateProduct(product);
+                int resultUpdate = updateProduct(product);
                 product1.setAmount(product1.getAmount()+order1.getAmount());
-                productDatabase.updateProduct(product1);;
+                int resultUpdate1 = updateProduct(product1);;
             }
             ContentValues values = new ContentValues();
             values.put(KEY_ID_PRODUCT, order.getIdProduct());
@@ -158,7 +158,7 @@ public class OrderTable {
         }
         else{
             product.setAmount(product.getAmount() + order.getAmount());
-            productDatabase.updateProduct(product);
+            int resultUpdate = updateProduct(product);
             int result = db.delete(TABLE_ORDERS, KEY_ID + " = ?",
                     new String[]{String.valueOf(id)});
             db.close();
@@ -184,7 +184,7 @@ public class OrderTable {
                 Timestamp.valueOf(cursor.getString(6)), Integer.parseInt(cursor.getString(7)));
 
         cursor.close();
-        db.close();
+        //db.close();
         return order;
     }
 
@@ -215,5 +215,20 @@ public class OrderTable {
         cursor.close();
         db.close();
         return orderList;
+    }
+    public int updateProduct(Product product) {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", product.getName());
+        values.put("price", product.getPrice());
+        values.put("brand", product.getBrand());
+        values.put("imgUrl", product.getImgUrl());
+        values.put("amount", product.getAmount());
+        values.put("capacity", product.getCapacity());
+
+        int result = db.update("products", values, KEY_ID + " = ?",
+                new String[]{String.valueOf(product.getId())});
+        //db.close();
+        return result;
     }
 }

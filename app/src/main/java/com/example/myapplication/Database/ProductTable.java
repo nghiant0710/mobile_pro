@@ -83,7 +83,7 @@ public class ProductTable {
                 cursor.getString(6));
 
         cursor.close();
-        db.close();
+
         return product;
     }
 
